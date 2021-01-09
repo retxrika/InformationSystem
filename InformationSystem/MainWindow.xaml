@@ -14,16 +14,54 @@
         Width="800"
         >
     <Window.Resources>
-        
+        <Style TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.05*"/>
-            <RowDefinition />
+            <RowDefinition Height="27"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="0.3*" MinWidth="200"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*" MinWidth="400"/>
         </Grid.ColumnDefinitions>
+        <GridSplitter Grid.Row="1" 
+                      Grid.Column="1" 
+                      ShowsPreview="False" 
+                      Width="3" 
+                      HorizontalAlignment="Stretch" 
+                      VerticalAlignment="Stretch" 
+                      Background="#FFDDDDDD"/>
+
+        <DockPanel Grid.ColumnSpan="3">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="File">
+                    <MenuItem Header="Save"/>
+                    <MenuItem Header="Load"/>
+                    <Separator/>
+                    <MenuItem Header="Exit"/>
+                </MenuItem>
+                <MenuItem Header="Edit">
+                    <MenuItem Header="Generate new"/>
+                </MenuItem>
+                <MenuItem Header="Help">
+                    <MenuItem Header="About"/>
+                </MenuItem>
+            </Menu>
+        </DockPanel>
+        <TreeView Grid.Row="1" Grid.Column="0" x:Name="CompanyList"/>
+        <DataGrid Grid.Row="1" Grid.Column="2">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Width="*"/>
+                <DataGridTextColumn Header="Name" Width="*"/>
+                <DataGridTextColumn Header="Age" Width="*"/>
+                <DataGridTextColumn Header="Position" Width="*"/>
+                <DataGridTextColumn Header="Projects" Width="*"/>
+                <DataGridTextColumn Header="Salary" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>
