@@ -1,4 +1,4 @@
-﻿namespace InformationSystem.Models.Employees
+﻿namespace InformationSystem
 {
     /// <summary>
     /// Абстрактный класс описывающий сотрудника.
