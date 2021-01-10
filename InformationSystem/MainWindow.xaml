@@ -53,7 +53,11 @@
             </Menu>
         </DockPanel>
         <TreeView Grid.Row="1" Grid.Column="0" x:Name="CompanyList"/>
-        <DataGrid x:Name="dgEmployees" Grid.Row="1" Grid.Column="2" AutoGenerateColumns="False">
+        <DataGrid x:Name="dgEmployees" 
+                  Grid.Row="1" 
+                  Grid.Column="2" 
+                  AutoGenerateColumns="False"
+                  HeadersVisibility="Column">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Path=ID}" IsReadOnly="True" Header="ID" Width="*"/>
                 <DataGridTextColumn Binding="{Binding Path=Name}" IsReadOnly="True" Header="Name" Width="*"/>
