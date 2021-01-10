@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace InformationSystem
 {
@@ -82,9 +83,23 @@ namespace InformationSystem
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Group organization;
+
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            organization = new Group("");
+            organization.Employees = new ObservableCollection<Employee>()
+            {
+                new CEO(123, "директор", 12, 0, 50000),
+                new Administrator(2231, "администратор", 13, 3, 22222)
+            };
+
+            dgEmployees.ItemsSource = organization.Employees;
         }
     }
 }

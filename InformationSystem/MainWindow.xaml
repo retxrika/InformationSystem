@@ -11,7 +11,7 @@
         Height="500"  
         
         MinWidth="800"
-        Width="800"
+        Width="800" Loaded="Window_Loaded"
         >
     <Window.Resources>
         <Style TargetType="{x:Type GridViewColumnHeader}">
@@ -24,9 +24,9 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.3*" MinWidth="200"/>
+            <ColumnDefinition Width="50*" MinWidth="50"/>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*" MinWidth="400"/>
+            <ColumnDefinition Width="150*" MinWidth="150"/>
         </Grid.ColumnDefinitions>
         <GridSplitter Grid.Row="1" 
                       Grid.Column="1" 
@@ -53,14 +53,14 @@
             </Menu>
         </DockPanel>
         <TreeView Grid.Row="1" Grid.Column="0" x:Name="CompanyList"/>
-        <DataGrid Grid.Row="1" Grid.Column="2">
+        <DataGrid x:Name="dgEmployees" Grid.Row="1" Grid.Column="2" AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Width="*"/>
-                <DataGridTextColumn Header="Name" Width="*"/>
-                <DataGridTextColumn Header="Age" Width="*"/>
-                <DataGridTextColumn Header="Position" Width="*"/>
-                <DataGridTextColumn Header="Projects" Width="*"/>
-                <DataGridTextColumn Header="Salary" Width="*"/>
+                <DataGridTextColumn Binding="{Binding Path=ID}" IsReadOnly="True" Header="ID" Width="*"/>
+                <DataGridTextColumn Binding="{Binding Path=Name}" IsReadOnly="True" Header="Name" Width="*"/>
+                <DataGridTextColumn Binding="{Binding Path=Age}" IsReadOnly="True" Header="Age" Width="*"/>
+                <DataGridTextColumn Binding="{Binding Path=Position}" IsReadOnly="True" Header="Position" Width="*"/>
+                <DataGridTextColumn Binding="{Binding Path=Projects}" IsReadOnly="True" Header="Projects" Width="*"/>
+                <DataGridTextColumn Binding="{Binding Path=Salary}" IsReadOnly="True" Header="Salary" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

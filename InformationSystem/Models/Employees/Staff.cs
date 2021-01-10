@@ -14,7 +14,7 @@
         /// <param name="projects">The number of projects an employee has.</param>
         /// <param name="salary">Employee salary.</param>
         public Staff(ushort id, string name, byte age, byte projects, uint salary)
-            : base(id, name, age, Position.Staff, projects, salary)
+            : base(id, name, age, "Staff", projects, salary)
         { }
     }
 }
