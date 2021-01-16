@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace InformationSystem
 {
@@ -83,7 +84,8 @@ namespace InformationSystem
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Group organization;
+        private ViewModelMainWindow _viewModel;
+        private Group _organization;
 
         public MainWindow()
         {
@@ -92,14 +94,14 @@ namespace InformationSystem
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            organization = new Group("");
-            organization.Employees = new ObservableCollection<Employee>()
-            {
-                new CEO(123, "директор", 12, 0, 50000),
-                new Administrator(2231, "администратор", 13, 3, 22222)
-            };
-
-            dgEmployees.ItemsSource = organization.Employees;
+            _organization = new Group("Organization");
+            _viewModel = new ViewModelMainWindow(this, _organization);
         }
+
+        /// <summary>
+        /// При нажатии на элемент из TreeView метод будет заполнять DataGrid.
+        /// </summary>
+        private void tvGroups_Selected(object sender, RoutedEventArgs e) 
+            => dgEmployees.ItemsSource = ((e.OriginalSource as TreeViewItem).Tag as Group).Employees;
     }
 }

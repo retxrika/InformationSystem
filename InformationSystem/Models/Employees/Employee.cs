@@ -21,7 +21,12 @@
             Age = age;
             Position = position;
             Projects = projects;
-            Salary = salary;
+            Salary = salary.ToString() + "$";
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
 
         #region Auto properties
@@ -36,7 +41,7 @@
 
         public byte Projects { get; set; }
 
-        public uint Salary { get; set; }
+        public string Salary { get; set; }
 
         #endregion
     }
