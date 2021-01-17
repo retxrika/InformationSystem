@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Threading;
+using System.Windows;
 
 namespace InformationSystem
 {
@@ -26,6 +27,8 @@ namespace InformationSystem
 
         public ObservableCollection<Group> Groups { get; set; }
 
+        private static uint wholeSalary = 0;
+        
         public override string ToString()
         {
             return Name;
@@ -37,18 +40,38 @@ namespace InformationSystem
         public static Group GenerateOrganization(Group organization)
         {
             Random rand = new Random();
-            organization.Groups = GenerateCollectionGroups(rand);
+            organization.Groups = GenerateCollectionGroupsWithWorkers(rand);
+
+            AddMainEmployees(organization, rand);
 
             return organization;
         }
 
         /// <summary>
-        /// Метод создания рандомной коллекции сотрудников.
+        /// Возвращает рандомную коллекцию департаментов c рандомными рабочими.
         /// </summary>
-        private static ObservableCollection<Employee> GenerateCollectionEmployees(Random rand)
+        private static ObservableCollection<Group> GenerateCollectionGroupsWithWorkers(Random rand)
+        {
+            ObservableCollection<Group> groups = new ObservableCollection<Group>();
+            int countGroups = rand.Next(5, 11);
+
+            for (int i = 0; i < countGroups; i++)
+            {
+                Group group = new Group("Department_" + (i + 1));
+                group.Employees = GenerateCollectionWorkers(rand);
+                groups.Add(group);
+            }
+
+            return groups;
+        }
+        
+        /// <summary>
+        /// Возвращает рандомную коллекцию рабочих.
+        /// </summary>
+        private static ObservableCollection<Employee> GenerateCollectionWorkers(Random rand)
         {
             ObservableCollection<Employee> employees = new ObservableCollection<Employee>();
-            int countEmployees = rand.Next(10, 101);
+            int countEmployees = rand.Next(5); /// TODO: (10, 101) изменить диапазон 
             
             // Добавление случайного количества случайных сотрудников.
             for (int i = 0; i < countEmployees; i++)
@@ -76,21 +99,61 @@ namespace InformationSystem
         }
 
         /// <summary>
-        /// Метод создания рандомной коллекции департаментов.
+        /// Возвращает организацию с управленцами.
         /// </summary>
-        private static ObservableCollection<Group> GenerateCollectionGroups(Random rand)
+        /// <param name="organization">Организация.</param>
+        private static Group AddMainEmployees(Group organization, Random rand)
         {
-            ObservableCollection<Group> groups = new ObservableCollection<Group>();
-            int countGroups = rand.Next(5, 11);
+            // Процент от всех зарплат.
+            uint percentageAllSalaries;
 
-            for (int i = 0; i < countGroups; i++)
+            // Перебираем все департаменты в группы.
+            for (int i = 0; i < organization.Groups.Count; i++)
             {
-                Group group = new Group("Department_" + (i + 1));
-                group.Employees = GenerateCollectionEmployees(rand);
-                groups.Add(group);
+                // Берем зарплату всех работников в отдельном департаменте и берем 15%.
+                percentageAllSalaries = (uint)(GetSalaryAllEmployeesInDepart(organization.Groups[i]) * 0.15);
+                // Сбрасываем значение всей зарплаты.
+                wholeSalary = 0;
+
+                // Зарплата управленца не должна быть меньше 1300.
+                if (percentageAllSalaries < 1300) percentageAllSalaries = 1300;
+
+                // Если в департаменте есть департаменты — добавить администратора.
+                if (organization.Groups[i].Groups.Count != 0)
+                    organization.Groups[i].Employees.Add(new Administrator(Convert.ToUInt16(rand.Next(10, 100)),
+                                            "Administrator_" + organization.Groups[i].Name.Replace("Department_", ""),
+                                            Convert.ToByte(rand.Next(18, 68)),
+                                            Convert.ToByte(rand.Next(1, 11)),
+                                            percentageAllSalaries));
+                // Иначе менеджера.
+                else
+                    organization.Groups[i].Employees.Add(new Manager(Convert.ToUInt16(rand.Next(10, 100)),
+                                            "Manager_" + organization.Groups[i].Name.Replace("Department_", ""),
+                                            Convert.ToByte(rand.Next(18, 68)),
+                                            Convert.ToByte(rand.Next(1, 11)),
+                                            percentageAllSalaries));
+                // Добавляем управленцев в текущем департаменте.
+                organization.Groups[i] = AddMainEmployees(organization.Groups[i], rand);
             }
 
-            return groups;
+            return organization;
         }
+
+        /// <summary>
+        /// Возвращает суммированную зарплату всех сотрудников в департаменте.
+        /// </summary>
+        /// <param name="depart">Департамент.</param>
+        private static uint GetSalaryAllEmployeesInDepart(Group depart)
+        {
+            // Считает в данном департаменте зарплату всех сотрудников.
+            foreach (var employee in depart.Employees)
+                wholeSalary += Convert.ToUInt32(employee.Salary.Trim('$'));
+
+            // Заходит во все департаменты этого департамента.
+            foreach (var dep in depart.Groups)
+                GetSalaryAllEmployeesInDepart(dep);
+
+            return wholeSalary;
+        } 
     }
 }
