@@ -21,7 +21,7 @@
             Age = age;
             Position = position;
             Projects = projects;
-            Salary = salary.ToString() + "$";
+            Salary = salary;
         }
 
         public override string ToString()
@@ -41,7 +41,7 @@
 
         public byte Projects { get; set; }
 
-        public string Salary { get; set; }
+        public uint Salary { get; set; }
 
         #endregion
     }

@@ -8,7 +8,7 @@ namespace InformationSystem
     internal class ViewModelMainWindow
     {
         private MainWindow _w;
-        private Group _organization;
+        public Group Organization;
 
         /// <summary>
         /// Constructor.
@@ -18,12 +18,55 @@ namespace InformationSystem
         public ViewModelMainWindow(MainWindow w, Group organization)
         {
             _w = w;
-            _organization = organization;
+            Organization = organization;
 
+            GenerateNewOrganization();
+        }
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="w">Main window of application.</param>
+        public ViewModelMainWindow(MainWindow w) : this(w, new Group("Organization"))
+        { }
+
+        /// <summary>
+        /// Генерация новой организации.
+        /// </summary>
+        public void GenerateNewOrganization()
+        {
+            ClearData();
             // Генерируем организацию.
-            _organization = Group.GenerateOrganization(_organization);
+            Organization = Group.GenerateOrganization(Organization);
             // Добавляем её в TreeView.
-            w.tvGroups.Items.Add(CreateTreeItem(_organization));
+            _w.tvGroups.Items.Add(CreateTreeItem(Organization));
+        }
+
+        /// <summary>
+        /// Изменение организации.
+        /// </summary>
+        /// <param name="NewOrganization"></param>
+        public void ChangeOrganization(Group NewOrganization)
+        {
+            if (NewOrganization != null)
+            {
+                ClearData();
+                // Генерируем организацию.
+                Organization = NewOrganization;
+                // Добавляем её в TreeView.
+                _w.tvGroups.Items.Add(CreateTreeItem(Organization));
+            }
+        }
+        
+        /// <summary>
+        /// Удаляет организацию.
+        /// </summary>
+        public void ClearData()
+        {
+            Organization.Employees.Clear();
+            Organization.Groups.Clear();
+
+            _w.tvGroups.Items.Clear();
         }
 
         /// <summary>

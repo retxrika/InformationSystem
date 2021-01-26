@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -85,7 +85,7 @@ namespace InformationSystem
     public partial class MainWindow : Window
     {
         private ViewModelMainWindow _viewModel;
-        private Group _organization;
+        private FileIOService service;
 
         public MainWindow()
         {
@@ -94,8 +94,8 @@ namespace InformationSystem
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            _organization = new Group("Organization");
-            _viewModel = new ViewModelMainWindow(this, _organization);
+            _viewModel = new ViewModelMainWindow(this, new Group("Organization"));
+            service = new FileIOService(this);
         }
 
         /// <summary>
@@ -103,5 +103,18 @@ namespace InformationSystem
         /// </summary>
         private void tvGroups_Selected(object sender, RoutedEventArgs e) 
             => dgEmployees.ItemsSource = ((e.OriginalSource as TreeViewItem).Tag as Group).Employees;
+
+        private void MenuItem_Click_About(object sender, RoutedEventArgs e) 
+            => MessageBox.Show("\"Information System\" version 0.0.1", "About", MessageBoxButton.OK, MessageBoxImage.Information);
+        
+        private void MenuItem_Click_GenerateNew(object sender, RoutedEventArgs e) => _viewModel.GenerateNewOrganization();
+        
+        private void MenuItem_Click_ClearData(object sender, RoutedEventArgs e) => _viewModel.ClearData();
+        
+        private void MenuItem_Click_Exit(object sender, RoutedEventArgs e) => Close();
+
+        private void MenuItem_Click_Save(object sender, RoutedEventArgs e) => service.SaveData(_viewModel.Organization);
+
+        private void MenuItem_Click_Load(object sender, RoutedEventArgs e) => _viewModel.ChangeOrganization(service.UnloadData());
     }
 }

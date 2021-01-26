@@ -47,6 +47,8 @@ namespace InformationSystem
             return organization;
         }
 
+        #region Private methods
+
         /// <summary>
         /// Возвращает рандомную коллекцию департаментов c рандомными рабочими.
         /// </summary>
@@ -55,11 +57,24 @@ namespace InformationSystem
             ObservableCollection<Group> groups = new ObservableCollection<Group>();
             int countGroups = rand.Next(5, 11);
 
+            // Добавление рандомного количества групп с рабочими.
             for (int i = 0; i < countGroups; i++)
             {
                 Group group = new Group("Department_" + (i + 1));
                 group.Employees = GenerateCollectionWorkers(rand);
                 groups.Add(group);
+            }
+
+            // Добавление в департаменты еще департаментов.
+            foreach (var group in groups)
+            {
+                countGroups = rand.Next(5, 11);
+                for (int i = 0; i < countGroups; i++)
+                {
+                    Group gp = new Group("Department_" + (i + 1));
+                    gp.Employees = GenerateCollectionWorkers(rand);
+                    group.Groups.Add(gp);
+                }
             }
 
             return groups;
@@ -104,34 +119,27 @@ namespace InformationSystem
         /// <param name="organization">Организация.</param>
         private static Group AddMainEmployees(Group organization, Random rand)
         {
-            // Процент от всех зарплат.
-            uint percentageAllSalaries;
+            // Если это организация — добавить директора.
+            if (organization.Name == "Organization")
+                organization.Employees.Add(new CEO(1, "CEO", Convert.ToByte(rand.Next(18, 68)), 0, 0));
 
             // Перебираем все департаменты в группы.
             for (int i = 0; i < organization.Groups.Count; i++)
             {
-                // Берем зарплату всех работников в отдельном департаменте и берем 15%.
-                percentageAllSalaries = (uint)(GetSalaryAllEmployeesInDepart(organization.Groups[i]) * 0.15);
-                // Сбрасываем значение всей зарплаты.
-                wholeSalary = 0;
-
-                // Зарплата управленца не должна быть меньше 1300.
-                if (percentageAllSalaries < 1300) percentageAllSalaries = 1300;
-
                 // Если в департаменте есть департаменты — добавить администратора.
                 if (organization.Groups[i].Groups.Count != 0)
                     organization.Groups[i].Employees.Add(new Administrator(Convert.ToUInt16(rand.Next(10, 100)),
                                             "Administrator_" + organization.Groups[i].Name.Replace("Department_", ""),
                                             Convert.ToByte(rand.Next(18, 68)),
                                             Convert.ToByte(rand.Next(1, 11)),
-                                            percentageAllSalaries));
+                                            0));
                 // Иначе менеджера.
                 else
                     organization.Groups[i].Employees.Add(new Manager(Convert.ToUInt16(rand.Next(10, 100)),
                                             "Manager_" + organization.Groups[i].Name.Replace("Department_", ""),
                                             Convert.ToByte(rand.Next(18, 68)),
                                             Convert.ToByte(rand.Next(1, 11)),
-                                            percentageAllSalaries));
+                                            0));
                 // Добавляем управленцев в текущем департаменте.
                 organization.Groups[i] = AddMainEmployees(organization.Groups[i], rand);
             }
@@ -147,13 +155,15 @@ namespace InformationSystem
         {
             // Считает в данном департаменте зарплату всех сотрудников.
             foreach (var employee in depart.Employees)
-                wholeSalary += Convert.ToUInt32(employee.Salary.Trim('$'));
+                wholeSalary += employee.Salary;
 
             // Заходит во все департаменты этого департамента.
             foreach (var dep in depart.Groups)
                 GetSalaryAllEmployeesInDepart(dep);
 
             return wholeSalary;
-        } 
+        }
+
+        #endregion
     }
 }
