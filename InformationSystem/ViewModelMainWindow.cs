@@ -37,7 +37,7 @@ namespace InformationSystem
         {
             ClearData();
             // Генерируем организацию.
-            Organization = Group.GenerateOrganization(Organization);
+            Organization = Group.GenerateOrganization();
             // Добавляем её в TreeView.
             _w.tvGroups.Items.Add(CreateTreeItem(Organization));
         }
